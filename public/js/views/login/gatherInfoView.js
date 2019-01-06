@@ -5,27 +5,27 @@ define([
     'text!templates/login/GatherInfoTemplate.html',
     'dataService',
     'helpers/keyValidator'
-], function (Backbone, _, $, GatherInfoTemplate, dataService, keyValidator) {
+], function(Backbone, _, $, GatherInfoTemplate, dataService, keyValidator) {
 
     var GatherInfoView = Backbone.View.extend({
-        el      : '#gatherView',
+        el: '#gatherView',
         template: _.template(GatherInfoTemplate),
 
         events: {
-            'click #submit'   : 'onSubmit',
+            'click #submit': 'onSubmit',
             'keypress .forNum': 'keypressHandler'
         },
 
-        initialize: function (options) {
+        initialize: function(options) {
 
             this.render();
         },
 
-        keypressHandler: function (e) {
+        keypressHandler: function(e) {
             return keyValidator(e, false, true);
         },
 
-        onSubmit: function (e) {
+        onSubmit: function(e) {
             var self = this;
             var $thisEl = this.$el;
             var mobilePhone = $thisEl.find('#phone').val() || '';
@@ -40,10 +40,10 @@ define([
 
             var data = {
                 mobilePhone: '+' + mobilePhone,
-                website    : website,
-                company    : company,
-                first      : firstName,
-                last       : lastName
+                website: website,
+                company: company,
+                first: firstName,
+                last: lastName
             };
 
             e.stopPropagation();
@@ -53,39 +53,49 @@ define([
                 err += 'Phone number is required';
             }
 
-            if (mobilePhone.length && (mobilePhone.length < 12 || isNaN(Number(mobilePhone)))) {
-                return App.render({type: 'error', message: 'Please, enter valid Mobile Phone'});
+            if (mobilePhone.length && (mobilePhone.length < 10 || isNaN(Number(mobilePhone)))) {
+                return App.render({
+                    type: 'error',
+                    message: 'Please, enter valid Mobile Phone'
+                });
             }
 
             if (err) {
-                App.render({type: 'error', message: err});
+                App.render({
+                    type: 'error',
+                    message: err
+                });
 
                 return;
             }
 
-            dataService.patchData('/users/' + App.currentUser._id, data, function (err) {
+            dataService.patchData('/users/' + App.currentUser._id, data, function(err) {
                 if (!err) {
                     self.$el.html('');
                     self.$el.addClass('hidden');
                     App.currentUser.mobilePhone = mobilePhone;
                     Backbone.history.fragment = '';
-                    Backbone.history.navigate('/easyErp/reportsDashboard', {trigger: true});
+                    Backbone.history.navigate('/easyErp/reportsDashboard', {
+                        trigger: true
+                    });
                     return false;
                 }
 
                 App.render({
-                    type   : 'error',
+                    type: 'error',
                     message: err.responseJSON.error
                 });
             });
         },
 
-        render: function () {
+        render: function() {
             var $thisEl = this.$el;
 
             this.$el.removeClass('hidden');
 
-            $thisEl.html(this.template({user: App.currentUser}));
+            $thisEl.html(this.template({
+                user: App.currentUser
+            }));
         }
     });
 

@@ -352,7 +352,7 @@ define([
                 return App.render({type: 'error', message: 'Please, enter valid email address'});
             }
 
-            if (mobilePhone.length && (mobilePhone.length < 12 || isNaN(Number(mobilePhone)))) {
+            if (mobilePhone.length && (mobilePhone.length < 10 || isNaN(Number(mobilePhone)))) {
                 return App.render({type: 'error', message: 'Please, enter valid Mobile Phone'});
             }
 
